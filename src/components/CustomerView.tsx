@@ -63,8 +63,7 @@ export default function CustomerView({ appointments, onBook, email, isPreview }:
 
   if (booked) {
     return (
-      <div className="fade-up" style={{ textAlign: 'center', padding: '60px 0' }}>
-        <img src="/DSLmobil logo.png" alt="DSLmobil" style={{ height: 36, width: 'auto', objectFit: 'contain', marginBottom: 24, opacity: 0.7 }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+      <div className="fade-up" style={{ textAlign: 'center', padding: '48px 0' }}>
         <CheckmarkAnimation />
         <h2 style={{ fontSize: 24, fontWeight: 700, color: '#1d1d1f', marginBottom: 10, letterSpacing: -0.3 }}>
           Termin bestätigt!
@@ -111,7 +110,7 @@ export default function CustomerView({ appointments, onBook, email, isPreview }:
             <h2 style={{ fontSize: 17, fontWeight: 700, color: '#1d1d1f', margin: '0 0 3px', letterSpacing: -0.3 }}>
               Verfügbare Termine
             </h2>
-            <p style={{ fontSize: 13, color: '#8E8E93', margin: 0, wordBreak: 'break-all' }}>
+            <p style={{ fontSize: 13, color: '#8E8E93', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {email
                 ? <>Buchung für <strong>{email}</strong></>
                 : 'Wählen Sie einen Termin und eine Zeitoption aus'}
