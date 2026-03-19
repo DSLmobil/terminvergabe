@@ -163,6 +163,7 @@ function AdminApp() {
   const [loadError, setLoadError]       = useState<string | null>(null);
   const [showReset, setShowReset]       = useState(false);
   const [resetting, setResetting]       = useState(false);
+  const [resetError, setResetError]     = useState<string | null>(null);
 
   // ── Daten laden ────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -219,6 +220,7 @@ function AdminApp() {
 
   const handleReset = async () => {
     setResetting(true);
+    setResetError(null);
     try {
       await api.resetAll();
       localStorage.removeItem(LS_EMAILS);
@@ -226,9 +228,11 @@ function AdminApp() {
       setSentIds(new Set());
       setBookings([]);
       setEmails('');
+      setShowReset(false);
+    } catch (err) {
+      setResetError(err instanceof Error ? err.message : 'Zurücksetzen fehlgeschlagen.');
     } finally {
       setResetting(false);
-      setShowReset(false);
     }
   };
 
@@ -325,7 +329,7 @@ function AdminApp() {
         <div
           className="fade-in"
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
-          onClick={e => e.target === e.currentTarget && setShowReset(false)}
+          onClick={e => { if (e.target === e.currentTarget) { setShowReset(false); setResetError(null); } }}
         >
           <div className="scale-in card-static" style={{ maxWidth: 400, width: '100%', padding: 32, textAlign: 'center' }}>
             <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#FFF5F5', border: '1.5px solid #FFD0CC', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
@@ -339,12 +343,17 @@ function AdminApp() {
             <h2 style={{ fontSize: 20, fontWeight: 700, color: '#1d1d1f', margin: '0 0 10px', letterSpacing: -0.3 }}>
               Umfrage zurücksetzen?
             </h2>
-            <p style={{ fontSize: 14, color: '#8E8E93', margin: '0 0 28px', lineHeight: 1.6 }}>
+            <p style={{ fontSize: 14, color: '#8E8E93', margin: '0 0 16px', lineHeight: 1.6 }}>
               Alle Termine, Tokens und Buchungen werden unwiderruflich gelöscht.{' '}
               {appointments.length > 0 && 'Der Export wurde bereits heruntergeladen.'}
             </p>
+            {resetError && (
+              <p style={{ fontSize: 13, color: '#FF3B30', background: '#FFF5F5', border: '1px solid #FFD0CC', borderRadius: 8, padding: '8px 12px', margin: '0 0 16px' }}>
+                {resetError}
+              </p>
+            )}
             <div style={{ display: 'flex', gap: 10 }}>
-              <button className="btn-secondary" onClick={() => setShowReset(false)} style={{ flex: 1, justifyContent: 'center' }}>
+              <button className="btn-secondary" onClick={() => { setShowReset(false); setResetError(null); }} style={{ flex: 1, justifyContent: 'center' }}>
                 Abbrechen
               </button>
               <button
