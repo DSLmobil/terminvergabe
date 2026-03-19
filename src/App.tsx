@@ -226,9 +226,9 @@ function AdminApp() {
       setSentIds(new Set());
       setBookings([]);
       setEmails('');
-      setShowReset(false);
     } finally {
       setResetting(false);
+      setShowReset(false);
     }
   };
 
