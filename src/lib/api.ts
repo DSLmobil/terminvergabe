@@ -182,9 +182,14 @@ export async function getBookings(): Promise<Booking[]> {
 // ─── Alles zurücksetzen ───────────────────────────────────────────────────────
 
 export async function resetAll(): Promise<void> {
-  const tables = ['bookings', 'token_appointments', 'tokens', 'appointments'];
-  for (const table of tables) {
-    const { error } = await supabase.from(table).delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  const steps: Array<{ table: string; col: string }> = [
+    { table: 'bookings',            col: 'id' },
+    { table: 'token_appointments',  col: 'token_id' },
+    { table: 'tokens',              col: 'id' },
+    { table: 'appointments',        col: 'id' },
+  ];
+  for (const { table, col } of steps) {
+    const { error } = await supabase.from(table).delete().neq(col, '00000000-0000-0000-0000-000000000000');
     if (error) throw new Error(`Fehler beim Löschen von ${table}: ${error.message}`);
   }
 }
