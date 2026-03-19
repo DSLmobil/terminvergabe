@@ -12,15 +12,22 @@ const LS_EMAILS = 'tv_emails';
 
 // ─── CSV Export ───────────────────────────────────────────────────────────────
 
-function exportCSV(appointments: Appointment[]) {
-  const rows = [['Datum', 'Ort', 'Zeitoption', 'Gebucht', 'Maximum', 'Verfügbar']];
+function exportCSV(appointments: Appointment[], bookings: Booking[]) {
+  const rows = [['Datum', 'Ort', 'Zeitoption', 'E-Mail Kunde', 'Gebucht', 'Maximum', 'Verfügbar']];
   for (const a of appointments) {
     const date = new Date(a.date + 'T00:00:00').toLocaleDateString('de-DE', {
       weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
     });
     for (const [key, label] of Object.entries(SLOT_LABELS) as [TimeSlot, string][]) {
       const s = a.slots[key];
-      rows.push([date, a.location ?? '', label, String(s.booked), String(s.max), String(s.max - s.booked)]);
+      const slotBookings = bookings.filter(b => b.appointment_id === a.id && b.slot_type === key);
+      if (slotBookings.length > 0) {
+        for (const b of slotBookings) {
+          rows.push([date, a.location ?? '', label, b.email, String(s.booked), String(s.max), String(s.max - s.booked)]);
+        }
+      } else {
+        rows.push([date, a.location ?? '', label, '', String(s.booked), String(s.max), String(s.max - s.booked)]);
+      }
     }
   }
   const csv = rows.map(r => r.map(c => `"${c}"`).join(';')).join('\n');
@@ -214,7 +221,7 @@ function AdminApp() {
   };
 
   const handleExportAndReset = () => {
-    exportCSV(appointments);
+    exportCSV(appointments, bookings);
     setShowReset(true);
   };
 
