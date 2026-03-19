@@ -74,15 +74,18 @@ function buildHtml(email: string, link: string, appointments: Appointment[]): st
           <h1 style="margin:0 0 6px;font-size:26px;font-weight:700;color:#1d1d1f;letter-spacing:-0.5px;">
             Ihre Termineinladung
           </h1>
-          <p style="margin:0 0 6px;font-size:14px;color:#8E8E93;">DSLmobil – Persönliche Beratung</p>
+          <p style="margin:0 0 6px;font-size:14px;color:#8E8E93;">DSLmobil – Glasfaser Montage</p>
           <hr style="border:none;border-top:1.5px solid #F5F5F7;margin:20px 0;">
 
           <!-- Greeting -->
           <p style="margin:0 0 24px;font-size:15px;color:#1d1d1f;line-height:1.7;">
             Guten Tag,<br><br>
-            die <strong>DSLmobil</strong> lädt Sie herzlich zu einem persönlichen Beratungstermin ein.
+            für die <strong>Glasfaser-Einbringung und Endmontage</strong> bei Ihnen möchten wir
+            gerne einen gemeinsamen Termin vereinbaren.<br><br>
             Bitte wählen Sie aus den verfügbaren Terminen denjenigen, der für Sie am besten passt,
-            und bestätigen Sie Ihre Buchung über Ihren persönlichen Link.
+            und bestätigen Sie Ihre Buchung über Ihren persönlichen Link.<br><br>
+            Bitte stellen Sie sicher, dass Sie oder eine berechtigte Person zum gewählten Termin
+            vor Ort ist, um unseren Monteuren Zugang zu ermöglichen.
           </p>
 
           <!-- Appointments -->
