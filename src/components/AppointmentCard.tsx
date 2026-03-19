@@ -117,7 +117,11 @@ export default function AppointmentCard({ appointment, onDelete, selectable, sel
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                 <span style={{ fontSize: 14, fontWeight: 600, color: '#1d1d1f' }}>{SLOT_LABELS[key]}</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 13, color: '#8E8E93' }}>
+                  <span
+                    style={{ fontSize: 13, color: slot.booked > 0 ? '#007AFF' : '#8E8E93', cursor: slot.booked > 0 ? 'pointer' : 'default', fontWeight: slot.booked > 0 ? 600 : 400 }}
+                    onClick={e => { if (slot.booked > 0) { e.stopPropagation(); setShowBookings(true); } }}
+                    title={slot.booked > 0 ? 'Buchungen anzeigen' : undefined}
+                  >
                     {slot.booked}/{slot.max}
                   </span>
                   {full

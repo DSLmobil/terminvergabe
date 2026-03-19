@@ -99,22 +99,24 @@ export default function CustomerView({ appointments, onBook, email, isPreview }:
   return (
     <div>
       {/* Company header */}
-      <div className="card-static" style={{ padding: '20px 24px', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 20 }}>
-        <img
-          src="/DSLmobil logo.png"
-          alt="DSLmobil"
-          style={{ height: 44, width: 'auto', objectFit: 'contain', flexShrink: 0 }}
-          onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-        />
-        <div style={{ borderLeft: '1.5px solid #E5E5EA', paddingLeft: 20 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 700, color: '#1d1d1f', margin: '0 0 3px', letterSpacing: -0.3 }}>
-            Verfügbare Termine
-          </h2>
-          <p style={{ fontSize: 13, color: '#8E8E93', margin: 0 }}>
-            {email
-              ? <>Buchung für <strong>{email}</strong></>
-              : 'Wählen Sie einen Termin und eine Zeitoption aus'}
-          </p>
+      <div className="card-static" style={{ padding: '16px 20px', marginBottom: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <img
+            src="/DSLmobil logo.png"
+            alt="DSLmobil"
+            style={{ height: 40, width: 'auto', objectFit: 'contain', flexShrink: 0 }}
+            onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+          />
+          <div style={{ borderLeft: '1.5px solid #E5E5EA', paddingLeft: 16, minWidth: 0, flex: 1 }}>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: '#1d1d1f', margin: '0 0 3px', letterSpacing: -0.3 }}>
+              Verfügbare Termine
+            </h2>
+            <p style={{ fontSize: 13, color: '#8E8E93', margin: 0, wordBreak: 'break-all' }}>
+              {email
+                ? <>Buchung für <strong>{email}</strong></>
+                : 'Wählen Sie einen Termin und eine Zeitoption aus'}
+            </p>
+          </div>
         </div>
       </div>
 
