@@ -15,6 +15,15 @@ interface TokenResult {
   link: string;
 }
 
+async function sendEmailsViaApi(recipients: TokenResult[], appointments: Appointment[]) {
+  const res = await fetch('/api/send-invitations', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ recipients, appointments }),
+  });
+  return res.json() as Promise<{ success: boolean; sent: number; failed: number }>;
+}
+
 function buildMailtoBody(appointments: Appointment[], tokenResults: TokenResult[]): string {
   const appointmentLines = appointments.map(a => {
     const date = new Date(a.date + 'T00:00:00').toLocaleDateString('de-DE', {
@@ -51,6 +60,7 @@ export default function InvitationSender({ selectedAppointments, emails, onSent 
   const [tokenResults, setTokenResults] = useState<TokenResult[]>([]);
   const [errorMsg, setErrorMsg] = useState('');
   const [copied, setCopied] = useState(false);
+  const [emailsSent, setEmailsSent] = useState(0);
 
   const emailList = emails.split('\n').map(e => e.trim()).filter(Boolean);
   const count = selectedAppointments.length;
@@ -71,8 +81,17 @@ export default function InvitationSender({ selectedAppointments, emails, onSent 
         link: `${baseUrl}/?token=${r.token}`,
       }));
       setTokenResults(tokenResultsWithLinks);
-      setStatus('done');
       onSent(appointmentIds);
+
+      // E-Mails automatisch versenden
+      try {
+        const result = await sendEmailsViaApi(tokenResultsWithLinks, selectedAppointments);
+        setEmailsSent(result.sent ?? 0);
+      } catch {
+        setEmailsSent(0);
+      }
+
+      setStatus('done');
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : 'Unbekannter Fehler');
       setStatus('error');
@@ -105,7 +124,7 @@ export default function InvitationSender({ selectedAppointments, emails, onSent 
               <polyline points="20 6 9 17 4 12"/>
             </svg>
             <h2 style={{ fontSize: 16, fontWeight: 600, color: '#1d9e3e', margin: 0 }}>
-              {tokenResults.length} individuelle Links generiert
+              {tokenResults.length} Links generiert · {emailsSent} E-Mail{emailsSent !== 1 ? 's' : ''} versendet
             </h2>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
