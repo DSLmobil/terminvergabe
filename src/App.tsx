@@ -121,8 +121,6 @@ function TokenCustomerView({ token }: { token: string }) {
 
 // ─── Haupt-App (Admin) ────────────────────────────────────────────────────────
 
-type Tab = 'admin' | 'customer';
-
 export default function App() {
   // Supabase noch nicht konfiguriert → Setup-Hinweis zeigen
   if (!supabaseConfigured) {
@@ -157,7 +155,6 @@ VITE_SUPABASE_ANON_KEY=dein-anon-key`}
 }
 
 function AdminApp() {
-  const [tab, setTab]                   = useState<Tab>('admin');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [sentIds, setSentIds]           = useState<Set<string>>(new Set());
   const [bookings, setBookings]         = useState<Booking[]>([]);
@@ -235,7 +232,6 @@ function AdminApp() {
     }
   };
 
-  const publishedAppointments = appointments.filter(a => sentIds.has(a.id));
   const hasData = appointments.length > 0 || emails.trim().length > 0;
 
   // ── Ladezustand ────────────────────────────────────────────────────────────
@@ -279,70 +275,48 @@ function AdminApp() {
             />
           </div>
 
-          <div className="nav-pill">
-            <button className={tab === 'admin' ? 'active' : ''} onClick={() => setTab('admin')}>Verwaltung</button>
-            <button className={tab === 'customer' ? 'active' : ''} onClick={() => setTab('customer')}>Vorschau</button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {appointments.length > 0 && (
+              <button
+                className="btn-secondary"
+                onClick={handleExportAndReset}
+                style={{ fontSize: 13, padding: '7px 14px', display: 'flex', alignItems: 'center', gap: 6 }}
+              >
+                <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Export & Neue Umfrage
+              </button>
+            )}
+            {!appointments.length && hasData && (
+              <button className="btn-secondary" onClick={() => setShowReset(true)} style={{ fontSize: 13, padding: '7px 14px' }}>
+                Zurücksetzen
+              </button>
+            )}
           </div>
-
-          {tab === 'admin' && (
-            <div style={{ display: 'flex', gap: 8 }}>
-              {appointments.length > 0 && (
-                <button
-                  className="btn-secondary"
-                  onClick={handleExportAndReset}
-                  style={{ fontSize: 13, padding: '7px 14px', display: 'flex', alignItems: 'center', gap: 6 }}
-                >
-                  <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                  </svg>
-                  Export & Neue Umfrage
-                </button>
-              )}
-              {!appointments.length && hasData && (
-                <button className="btn-secondary" onClick={() => setShowReset(true)} style={{ fontSize: 13, padding: '7px 14px' }}>
-                  Zurücksetzen
-                </button>
-              )}
-            </div>
-          )}
-          {tab !== 'admin' && <div style={{ width: 180 }} />}
         </div>
       </header>
 
       {/* Main */}
       <main style={{ maxWidth: 900, margin: '0 auto', padding: '32px 24px 80px' }}>
         <div style={{ marginBottom: 28 }} className="fade-up">
-          {tab === 'admin' ? (
-            <>
-              <h1 style={{ fontSize: 28, fontWeight: 700, color: '#1d1d1f', margin: '0 0 6px', letterSpacing: -0.5 }}>Verwaltung</h1>
-              <p style={{ fontSize: 15, color: '#8E8E93', margin: 0 }}>E-Mails verwalten, Termine erstellen und Einladungen versenden</p>
-            </>
-          ) : (
-            <h1 style={{ fontSize: 28, fontWeight: 700, color: '#1d1d1f', margin: 0, letterSpacing: -0.5 }}>Vorschau</h1>
-          )}
+          <h1 style={{ fontSize: 28, fontWeight: 700, color: '#1d1d1f', margin: '0 0 6px', letterSpacing: -0.5 }}>Verwaltung</h1>
+          <p style={{ fontSize: 15, color: '#8E8E93', margin: 0 }}>E-Mails verwalten, Termine erstellen und Einladungen versenden</p>
         </div>
 
-        <div key={tab} className="fade-up">
-          {tab === 'admin' ? (
-            <AdminView
-              appointments={appointments}
-              onAddAppointment={addAppointment}
-              onDeleteAppointment={deleteAppointment}
-              sentIds={sentIds}
-              onSent={handleSent}
-              emails={emails}
-              onEmailsChange={setEmails}
-              bookings={bookings}
-            />
-          ) : (
-            <CustomerView
-              appointments={publishedAppointments}
-              onBook={() => {}}
-              isPreview
-            />
-          )}
+        <div className="fade-up">
+          <AdminView
+            appointments={appointments}
+            onAddAppointment={addAppointment}
+            onDeleteAppointment={deleteAppointment}
+            sentIds={sentIds}
+            onSent={handleSent}
+            emails={emails}
+            onEmailsChange={setEmails}
+            bookings={bookings}
+          />
         </div>
       </main>
 
